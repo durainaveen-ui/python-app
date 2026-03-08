@@ -42,10 +42,15 @@ jobs:
       - name: Checkout the Repo
         uses: actions/checkout@v4
 
+      - name: Set up Python and install yq
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          pip-install: 'yq'
+
       - name: Update commit id
         run: |
           echo "Deploying version: ${{ needs.build-and-push.outputs.commit-id }}"
-          pip install yq
           yq -Yi '.image.tag = "${{ needs.build-and-push.outputs.commit-id }}"' charts/values.yaml
 
       - name: Push Changes to Repo
