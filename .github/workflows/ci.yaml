@@ -40,7 +40,7 @@ jobs:
     needs: build-and-push # Ensures build finishes and passes outputs
     steps:
       - name: Checkout the Repo
-        uses: uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Update commit id
         run: |
