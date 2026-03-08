@@ -9,9 +9,9 @@ app = Flask(__name__)
 @app.route("/")
 def hello_world():
     return jsonify({
-   	'time':datetime.datetime.now().strftime("%I:%M:%S %p on %B %d, %Y"),
-	'hostname':socket.gethostname(),
-	'message':"hello naveen 8"
+    'time':datetime.datetime.now().strftime("%I:%M:%S %p on %B %d, %Y"),
+    'hostname':socket.gethostname(),
+    'message':"hello naveen 8"
     })
 
 # This part allows running the script directly
