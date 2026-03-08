@@ -13,11 +13,11 @@ jobs:
       - name: Download Argocd Binary
         shell: bash
         run: |
-          curl -sSL -o argocd https://argocd-release-server.argocd-ns/download/argocd-linux-amd64
+          sudo curl -sSL -o argocd https://argocd-release-server.argocd-ns/download/argocd-linux-amd64
           chmod +x argocd
           cp argocd /usr/local/bin/argocd
 
       - name: Argocd Login
         shell: bash
         run: |
-          argocd login argocd-release-server.argocd-ns --insecure --grpc-web --username admin --password ${{ secrests.ARGOCD_PASSW}}
+          argocd login argocd-release-server.argocd-ns --insecure --grpc-web --username admin --password ${{ secrets.ARGOCD_PASSW}}
