@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app-label
+  template:
+    metadata:
+      labels:
+        app: python-app-label
+    spec:
+      containers:
+      - name: python-app
+        image: durainaveen/python-app:v1
+        ports:
+        - containerPort: 5000

@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: python-app-service
+spec:
+  selector:
+    app: python-app-label
+  ports:
+  # Default port used by the image
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
