@@ -39,9 +39,19 @@ jobs:
     runs-on: self-hosted
     needs: build-and-push # Ensures build finishes and passes outputs
     steps:
+      - name: Checkout the Repo
+        uses: uses: actions/checkout@v4
+
       - name: Update commit id
         run: |
           echo "Deploying version: ${{ needs.build-and-push.outputs.commit-id }}"
+	  pip install yq
+	  yq -Yi '.image.tag: "${{ needs.build-and-push.outputs.commit-id }}"' charts/values.yaml
+
+      - name: Push Changes to Repo
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Updating commit id with version: ${{ needs.build-and-push.outputs.commit-id }}"
 
       - name: Download Argocd Binary
         run: |
@@ -56,5 +66,5 @@ jobs:
       - name: Argocd App Sync
         run: |
           # Optionally update the image tag in ArgoCD before syncing
-          argocd app set python-app -p image.tag=${{ needs.build-and-push.outputs.commit-id }}
-          #argocd app sync python-app
+          #argocd app set python-app -p image.tag=${{ needs.build-and-push.outputs.commit-id }}
+          argocd app sync python-app
