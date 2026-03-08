@@ -1,18 +1,25 @@
-name: Build and Push Docker Image
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ "main" ]
     paths:
-      - src/**
+      - 'src/**'
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
+    # Map the step output to a job output so 'deploy' can see it
+    outputs:
+      commit-id: ${{ steps.set_var.outputs.COMMIT_ID }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set short SHA
+        id: set_var
         shell: bash
-        run: echo "COMMIT_ID=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+        run: echo "COMMIT_ID=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -23,5 +30,31 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          context: .
           push: true
-          tags: durainaveen/python-app:${{ env.COMMIT_ID }}
+          # Uses the ID created in the second step
+          tags: durainaveen/python-app:${{ steps.set_var.outputs.COMMIT_ID }}
+
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-push # Ensures build finishes and passes outputs
+    steps:
+      - name: Update commit id
+        run: |
+          echo "Deploying version: ${{ needs.build-and-push.outputs.commit-id }}"
+
+      - name: Download Argocd Binary
+        run: |
+          sudo curl -ksSL -o argocd https://argocd-release-server.argocd-ns
+          sudo chmod +x argocd
+          sudo cp argocd /usr/local/bin/argocd
+
+      - name: Argocd Login
+        run: |
+          argocd login argocd-release-server.argocd-ns --insecure --grpc-web --username admin --password ${{ secrets.ARGOCD_PASSW }}
+
+      - name: Argocd App Sync
+        run: |
+          # Optionally update the image tag in ArgoCD before syncing
+          argocd app set python-app -p image.tag=${{ needs.build-and-push.outputs.commit-id }}
+          #argocd app sync python-app
