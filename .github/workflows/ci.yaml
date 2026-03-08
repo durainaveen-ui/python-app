@@ -45,7 +45,7 @@ jobs:
 
       - name: Download Argocd Binary
         run: |
-          sudo curl -ksSL -o argocd https://argocd-release-server.argocd-ns
+          sudo curl -ksSL -o argocd https://argocd-release-server.argocd-ns/download/argocd-linux-amd64
           sudo chmod +x argocd
           sudo cp argocd /usr/local/bin/argocd
 
