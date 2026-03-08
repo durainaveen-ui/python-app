@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: durainaveen/python-app
   pullPolicy: IfNotPresent
-  tag: "7f4be38"
+  tag: "ee6811c"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
