@@ -11,7 +11,7 @@ def hello_world():
     return jsonify({
         'time': datetime.datetime.now().strftime("%I:%M:%S %p on %B %d, %Y"),
         'hostname': socket.gethostname(),
-        'message': "hello naveen 9"
+        'message': "hello naveen 10"
     })
 
 # This part allows running the script directly
